@@ -7,7 +7,9 @@ import React from 'react';
 // import DataFetchingTwo from './components/FetchingData/DataFetchingTwo';
 // import ParentComponent from './components/Callback/ParentComponent';
 // import MemoCounter from './components/Callback/MemoCounter';
-import FocusInput from './components/Ref/FocusInput';
+// import FocusInput from './components/Ref/FocusInput';
+// import ClassTimer from './components/Ref/ClassTimer';
+import HookTimer from './components/Ref/HookTimer';
 // import CounterOne from './components/Reducer/CounterOne';
 // import CounterTwo from './components/Reducer/CounterTwo';
 // import CounterThree from './components/Reducer/CounterThree';
@@ -79,7 +81,9 @@ function App() {
       {/* <DataFetchingTwo /> */}
       {/* <ParentComponent /> */}
       {/* <MemoCounter /> */}
-      <FocusInput />
+      {/* <FocusInput /> */}
+      {/* <ClassTimer /> */}
+      <HookTimer />
     </div>
   );
 }
