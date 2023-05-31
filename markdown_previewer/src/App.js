@@ -18,7 +18,7 @@ export class App extends Component {
   handleChange = (e) => {
     this.setState({
         text: e.target.value,
-        markedText: (e.target.value)
+        markedText: marked.parse(e.target.value)
     })
   }
 
