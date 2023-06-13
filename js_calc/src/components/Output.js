@@ -1,9 +1,8 @@
 import React from 'react'
 
-function Output() {
+function Output(props) {
   return (
-    // <div className='outputScreen' id='display'>{this.props.currentValue}</div>
-    <div className='outputScreen' id='display'>output</div>
+    <div className='outputScreen' id='display'>{props.currentValue}</div>
     )
 }
 
