@@ -81,6 +81,13 @@ button {
   width: 160px;
 }
 
+.equals {
+  background: #004466;
+  height: 130px;
+  position: absolute;
+  bottom: 5px
+}
+
 .author {
   text-align: center;
   font-family: Share Tech Mono, sans;
