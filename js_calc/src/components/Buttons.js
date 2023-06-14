@@ -5,6 +5,7 @@ export class Buttons extends Component {
     return (
       <div>
         <button
+            id='clear'
             className='jumbo'
             onClick={this.props.initialize}
             value='AC'>AC</button>
@@ -13,7 +14,7 @@ export class Buttons extends Component {
             value='/'>/</button>
         <button
             onClick={this.props.operators}
-            value='x'>x</button>
+            value='*'>x</button>
         <button
             onClick={this.props.numbers}
             value='7'>7</button>

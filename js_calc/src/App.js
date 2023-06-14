@@ -14,12 +14,43 @@ export class App extends Component {
       currentSign: 'pos',
     }
   } 
-  render() {
-    const isOperator = /[x/+-]/,                  // Search all operators in string
-        endWithOperator = /[x/+-]$/,              // Search all operators in end of string
+
+  componentDidMount() {
+    window.addEventListener('keydown', this.handleKeyPress)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.handleKeyPress)
+  }
+
+  handleKeyPress = event => {
+    const key = event.key;
+    const code = event.code;
+    if (/\d|[*/+-.]|Backspace/.test(key) || key === "Enter") {
+      event.preventDefault(); // Забороняємо виконання дії за замовчуванням, пов'язаної з клавішею
+      if (/\d/.test(key)) {
+        this.handleNumbers({ target: { value: key } });
+      } else if (/[*/+-.]/.test(key)) {
+        this.handleOperators({ target: { value: key } });
+      } else if (key === '.') {
+        this.handleDecimal();
+      } else if (key === 'Enter') {
+        this.handleEvaluate();
+      } else if (key === 'Backspace') {
+        this.initialize();
+      }
+    }
+    else if (code === 'F1' || code === 'F2' || key === 'Tab') {
+        // Виключення для службових клавіш (F1, F2, Tab)
+        event.preventDefault();
+    }
+  };
+
+    isOperator = /[x/+-]/                  // Search all operators in string
+        endWithOperator = /[x/+-]$/              // Search all operators in end of string
         endWithNegativeSign = /\d[x/+-]{1}-$/     // Search one number with proposed sign and then with minus in the end of string
 
-    const maxDigitWarning = () => {
+    maxDigitWarning = () => {
         this.setState({
             currentVal: 'Digit Limit Met',
             prevVal: this.state.currentVal
@@ -27,13 +58,13 @@ export class App extends Component {
         setTimeout(() => this.setState({currentVal: this.state.prevVal}), 1000)
     }
 
-    const handleNumbers = e => {
+    handleNumbers = e => {
         if (!this.state.currentVal.includes('Limit')) {
             const {currentVal, formula, evaluated} = this.state
             const value = e.target.value
             this.setState({evaluated: false})
             if (currentVal.length > 21) {
-                maxDigitWarning()                       // catch err with length
+                this.maxDigitWarning()                       // catch err with length
             } else if (evaluated) {
                 this.setState({
                     currentVal: value,
@@ -41,7 +72,7 @@ export class App extends Component {
                 })
             } else {
                 this.setState({
-                    currentVal: currentVal === '0' || isOperator.test(currentVal) ? value : currentVal + value,
+                    currentVal: currentVal === '0' || this.isOperator.test(currentVal) ? value : currentVal + value,
                     formula: currentVal === '0' && value === '0' 
                     ? formula === '' ? value : formula : /([^.0-9]0|^0)$/.test(formula)
                     ? formula.slice(0, -1) + value : formula + value 
@@ -50,7 +81,7 @@ export class App extends Component {
         }
     } 
 
-    const handleOperators = e => {
+    handleOperators = e => {
         if (!this.state.currentSign.includes('Limit')) {
             const value = e.target.value
             const {formula, prevVal, evaluated} = this.state
@@ -62,14 +93,14 @@ export class App extends Component {
                 this.setState({
                     formula: prevVal + value
                 })
-            } else if (!endWithNegativeSign.test(formula)) {
+            } else if (!this.endWithNegativeSign.test(formula)) {
                 this.setState({
                     prevVal: formula,
                     formula: formula + value
                 })
-            } else if (!endWithNegativeSign.test(formula)) {
+            } else if (!this.endWithNegativeSign.test(formula)) {
                 this.setState({
-                    formula: (endWithNegativeSign.test(formula + value) ? formula : prevVal) + value
+                    formula: (this.endWithNegativeSign.test(formula + value) ? formula : prevVal) + value
                 })
             } else if (value !== '-') {
                 this.setState({formula: prevVal + value})
@@ -77,14 +108,14 @@ export class App extends Component {
         }
     }
 
-    const handleEvaluate = () => {
-        if (!this.state.currentVal.includes('Limit')) {
+    handleEvaluate = () => {
+        if (!this.state.currentVal.includes('Limit') && this.state.evaluated !== true) {
             let expression = this.state.formula
-            while (endWithOperator.test(expression)) {
+            while (this.endWithOperator.test(expression)) {
                 expression = expression.slice(0, -1)
             }
             expression = expression
-                .replace(/x/g, '*')
+                // .replace(/x/g, '*')
                 .replace(/-/g, '-')
                 .replace(/--/, '+0+0+0+0+0+0+')
             // eslint-disable-next-line
@@ -92,7 +123,7 @@ export class App extends Component {
             this.setState({
                 currentVal: answer.toString(),
                 formula: expression
-                    .replace(/\*/g, '⋅')
+                    // .replace(/\*/g, '⋅')
                     .replace(/-/g, '-')
                     .replace('+0+0+0+0+0+0+', '--')
                     .replace(/(x|\/|\+)-/, '$1-')
@@ -103,7 +134,7 @@ export class App extends Component {
         }
     }
 
-    const handleDecimal = () => {
+    handleDecimal = () => {
         if (this.state.evaluated === true) {
             this.setState({
                 currentVal: '0.',
@@ -116,7 +147,7 @@ export class App extends Component {
                 this.setState({ evaluated: false })
             if (this.state.currentVal.length > 21) {
                 this.maxDigitWarning()
-            } else if (endWithOperator.test(this.state.formula) || 
+            } else if (this.endWithOperator.test(this.state.formula) || 
                 (this.state.currentVal === '0' && this.state.formula === '')) {
                     this.setState({
                         currentVal: '0.',
@@ -131,7 +162,7 @@ export class App extends Component {
             }
     }
 
-    const initialize = () => {
+    initialize = () => {
         this.setState({
             currentVal: '0',
             prevVal: '0',
@@ -141,15 +172,19 @@ export class App extends Component {
         })
     }
 
+
+  render() {
+    
     return (
       <div className='calculator'>
-        <Formula formula={this.state.formula.replace(/x/g, '⋅')}/>
+        {/* <Formula formula={this.state.formula.replace(/x/g, '⋅')}/> */}
+        <Formula formula={this.state.formula}/>
         <Output currentValue={this.state.currentVal}/>
-        <Buttons numbers={handleNumbers}
-                operators={handleOperators}
-                initialize={initialize}
-                decimal={handleDecimal}
-                evaluate={handleEvaluate}/>
+        <Buttons numbers={this.handleNumbers}
+                operators={this.handleOperators}
+                initialize={this.initialize}
+                decimal={this.handleDecimal}
+                evaluate={this.handleEvaluate}/>
       </div>
     )
   }

@@ -32,6 +32,7 @@ body {
 }
 
 .calculator {
+  margin: auto;
   border: 2px solid #47476b;
   padding: 5px;
   background: black;
@@ -88,15 +89,6 @@ button {
   bottom: 5px
 }
 
-.author {
-  text-align: center;
-  font-family: Share Tech Mono, sans;
-  margin-top: 15px;
+#clear {
+  background: #ac3939;
 }
-
-.author.a {
-    text-decoration: none;
-    color: #00264d;
-    line-height: 26px;
-}
-
