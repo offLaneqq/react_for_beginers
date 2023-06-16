@@ -1,7 +1,7 @@
 {
   "name": "js_calc",
   "version": "0.1.0",
-  "homepage": "https://offlaneqq.github.io/js_calc",
+  "homepage": "https://offlaneqq.github.io/react_for_beginers/",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
