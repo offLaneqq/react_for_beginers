@@ -4,8 +4,16 @@ export class TimerLengthControl extends Component {
   render() {
     return (
       <div className='length-control'>
-        <button>-</button>
-        <button>+</button>
+        <div>{this.props.title}</div>
+        <button 
+          onClick={this.props.onClick}
+          id={this.props.minID}
+          value='-' >-</button>
+        <div>{this.props.length}</div>
+        <button 
+          onClick={this.props.onClick}
+          id={this.props.addID}
+          value='+' >+</button>
       </div>
     )
   }

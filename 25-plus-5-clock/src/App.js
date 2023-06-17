@@ -1,7 +1,24 @@
 import './App.css';
 import React, { Component } from 'react'
 import TimerLengthControl from './components/TimerLengthControl';
-import AccurateInterval from './components/AccurateInterval';
+
+const AccurateInterval = (fn, time) => {
+  var cancel, nextAt, timeout, wrapper;
+  nextAt = new Date().getTime() + time
+  timeout = null
+  wrapper = () => {
+    nextAt += time
+    timeout = setTimeout(wrapper, nextAt - new Date().getTime())
+    return fn()
+  }
+  cancel = () => {
+    return clearTimeout(timeout)
+  }
+  timeout = setTimeout(wrapper, nextAt - new Date().getTime())
+  return {
+    cancel: cancel
+  }
+}
 
 export class App extends Component {
   constructor(props) {
@@ -54,7 +71,7 @@ export class App extends Component {
     )
   }
 
-  setSessionLLength = e => {
+  setSessionLength = e => {
     this.lengthControl(
       'sessionLength',
       e.currentTarget.value,
@@ -158,8 +175,40 @@ export class App extends Component {
     return (
       <div>
         <div className='main-title'>25 + 5 Clock</div>
-        <TimerLengthControl />
-        <TimerLengthControl />
+        <TimerLengthControl 
+          addID='break-increment'
+          minID='break-decrement'
+          length={this.state.breakLength}
+          lengthID='break-length'
+          title='Break Length'
+          titleID='break-label'
+          onClick={this.setBreakLength} />
+        <TimerLengthControl
+          addID='session-increment'
+          minID='session-decrement'
+          length={this.state.sessionLength}
+          lengthID='session-length'
+          title='Session Length'
+          titleID='session-label'
+          onClick={this.setSessionLength} />
+          <div className='timer'>
+            <div className='timer-wrapper'>
+              <div>{this.state.timerType}</div>
+              <div>{this.clockify()}</div>
+            </div>
+          </div>
+          <div className='timer-control'>
+            <button id='start-stop' onClick={this.timerControl}>start/stop</button>
+            <button id='reset' onClick={this.reset}>reset</button>
+          </div>
+          <audio
+          id="beep"
+          preload="auto"
+          ref={(audio) => {
+            this.audioBeep = audio;
+          }}
+          src="https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/BeepSound.wav"
+        />
       </div>
     )
   }
